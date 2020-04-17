@@ -416,7 +416,7 @@ int h, w, x, y, c, m, index;
   float value;
 #pragma omp parallel private(h, w, x, y, c, m, index, value) shared(image, kernels, output)
     {
-      /*
+      
 #pragma omp for collapse(3)
   // initialize the output matrix to zero
   for ( m = 0; m < nkernels; m++ ) {
@@ -426,7 +426,7 @@ int h, w, x, y, c, m, index;
       }
     }
   }
-*/
+
   DEBUGGING(fprintf(stderr, "w=%d, h=%d, c=%d\n", w, h, c));
 
   // now compute multichannel, multikernel convolution
