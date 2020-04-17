@@ -423,7 +423,6 @@ void team_conv_sparse(float ** * image, struct sparse_matrix ** * kernels,
   // now compute multichannel, multikernel convolution
 
 #pragma omp for collapse(4) 
- 
   for ( w = 0; w < width; w++ ) {
     for ( h = 0; h < height; h++ ) {
       for ( x = 0; x < kernel_order; x++) {
