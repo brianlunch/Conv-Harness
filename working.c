@@ -433,9 +433,9 @@ void team_conv_sparse(float ** * image, struct sparse_matrix ** * kernels,
 		  end =kernel -> kernel_starts[m + 1];
 		  outputSave =output[m][h][w];
         for ( index = kernel->kernel_starts[m]; index < end; index++ ) {
-          output[m][h][w] += image[w+x][h+y][kernel->channel_numbers[index]] * kernel->values[index];
+          outputSave += imageRef[kernel->channel_numbers[index]] * kernel->values[index];
         }
-		//output[m][h][w] = outputSave;
+		output[m][h][w] = outputSave;
       } // m
     } // y
       } // x
