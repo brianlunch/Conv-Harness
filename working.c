@@ -423,19 +423,21 @@ void team_conv_sparse(float ** * image, struct sparse_matrix ** * kernels,
   // now compute multichannel, multikernel convolution
 
 #pragma omp for collapse(4) 
+ 
   for ( w = 0; w < width; w++ ) {
     for ( h = 0; h < height; h++ ) {
       for ( x = 0; x < kernel_order; x++) {
     for ( y = 0; y < kernel_order; y++ ) {
       struct sparse_matrix * kernel = kernels[x][y];
-	  imageRef = image[w + x][h + y];
       for ( m = 0; m < nkernels; m++ ) {
-		  end =kernel -> kernel_starts[m + 1];
-		  outputSave =output[m][h][w];
-        for ( index = kernel->kernel_starts[m]; index < end; index++ ) {
-          outputSave += imageRef[kernel->channel_numbers[index]] * kernel->values[index];
+        for ( index = kernel->kernel_starts[m]; index < kernel->kernel_starts[m+1]; index++ ) {
+          int this_c = kernel->channel_numbers[index];
+
+          assert( (this_c >= 0) && (this_c < nchannels) );
+          value = kernel->values[index];
+
+          output[m][h][w] += image[w+x][h+y][this_c] * value;
         }
-		output[m][h][w] = outputSave;
       } // m
     } // y
       } // x
