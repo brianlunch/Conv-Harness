@@ -412,17 +412,25 @@ void multichannel_conv_sparse(float *** image, struct sparse_matrix *** kernels,
 void team_conv_sparse(float ** * image, struct sparse_matrix ** * kernels,
    float ** * output, int width, int height,
    int nchannels, int nkernels, int kernel_order) {
- int h, w, x, y, c, m, index, end;
-  float value, outputSave;
-  
-#pragma omp parallel if(nkernels > 64) private(h, w, x, y, c, m, index, value, end,outputSave) shared(image, kernels, output)
+ int h, w, x, y, c, m, index;
+  float value;
+#pragma omp parallel private(h, w, x, y, c, m, index, value) shared(image, kernels, output)
     {
+#pragma omp for collapse(3)
+  // initialize the output matrix to zero
+  for ( m = 0; m < nkernels; m++ ) {
+    for ( h = 0; h < height; h++ ) {
+      for ( w = 0; w < width; w++ ) {
+    output[m][h][w] = 0.0;
+      }
+    }
+  }
 
   DEBUGGING(fprintf(stderr, "w=%d, h=%d, c=%d\n", w, h, c));
 
   // now compute multichannel, multikernel convolution
 
-#pragma omp for collapse(4) 
+#pragma omp for collapse(4)
   for ( w = 0; w < width; w++ ) {
     for ( h = 0; h < height; h++ ) {
       for ( x = 0; x < kernel_order; x++) {
