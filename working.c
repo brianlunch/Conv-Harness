@@ -415,14 +415,14 @@ void team_conv_sparse(float ** * image, struct sparse_matrix ** * kernels,
  int h, w, x, y, c, m, index, end;
   float value, outputSave;
   float *imageRef = malloc(sizeof(int)*kernel_order * width*kernel_order * width);
-#pragma omp parallel private(h, w, x, y, c, m, index, value, end, imageRef,outputSave) shared(image, kernels, output)
+#pragma omp parallel if(nkernels > 63) private(h, w, x, y, c, m, index, value, end, imageRef,outputSave) shared(image, kernels, output)
     {
 
   DEBUGGING(fprintf(stderr, "w=%d, h=%d, c=%d\n", w, h, c));
 
   // now compute multichannel, multikernel convolution
 
-#pragma omp for if(nkernels > 63)collapse(4) 
+#pragma omp for collapse(4) 
   for ( w = 0; w < width; w++ ) {
     for ( h = 0; h < height; h++ ) {
       for ( x = 0; x < kernel_order; x++) {
