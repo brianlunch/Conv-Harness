@@ -416,15 +416,7 @@ void team_conv_sparse(float ** * image, struct sparse_matrix ** * kernels,
   float value;
 #pragma omp parallel private(h, w, x, y, c, m, index, value) shared(image, kernels, output)
     {
-#pragma omp for collapse(3)
-  // initialize the output matrix to zero
-  for ( m = 0; m < nkernels; m++ ) {
-    for ( h = 0; h < height; h++ ) {
-      for ( w = 0; w < width; w++ ) {
-    output[m][h][w] = 0.0;
-      }
-    }
-  }
+
 
   DEBUGGING(fprintf(stderr, "w=%d, h=%d, c=%d\n", w, h, c));
 
